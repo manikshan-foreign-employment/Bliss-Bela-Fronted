@@ -12,7 +12,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -20,29 +20,13 @@
                 extend: {
                     fontFamily: {
                         sans: ['"Inter"', 'sans-serif'],
-                        serif: ['"Playfair Display"', 'serif'],
                     },
                     colors: {
                         brand: {
-                            orange: '#f1641e', 
-                            dark: '#111111',
-                            light: '#f9f9f9',
-                            green: '#a7d9d0', 
-                            accent: '#2563eb' 
-                        }
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-out forwards',
-                        'toast-in': 'toastIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        toastIn: {
-                            '0%': { transform: 'translateY(-100%)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                            primary: '#db2777', // Pink-600
+                            dark: '#111111',    // Black
+                            light: '#fdf2f8',   // Pink-50
+                            accent: '#be185d'   // Pink-700
                         }
                     }
                 }
@@ -51,97 +35,100 @@
     </script>
 
     <style>
-        body { background-color: #ffffff; color: #111111; -webkit-font-smoothing: antialiased; }
-        html { scroll-behavior: smooth; touch-action: manipulation; }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
-
+        body { background-color: #f8f9fa; color: #111111; -webkit-font-smoothing: antialiased; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-thumb { background: #db2777; border-radius: 10px; }
+        
         .loader-ring { display: inline-block; width: 36px; height: 36px; }
         .loader-ring:after {
             content: " "; display: block; width: 28px; height: 28px; margin: 4px;
-            border-radius: 50%; border: 3px solid #111111;
-            border-color: #111111 transparent #111111 transparent;
+            border-radius: 50%; border: 3px solid #db2777;
+            border-color: #db2777 transparent #db2777 transparent;
             animation: loader-ring 1.2s linear infinite;
         }
         @keyframes loader-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .cat-link { position: relative; display: inline-block; cursor: pointer; }
-        .cat-link::after {
-            content: ''; position: absolute; width: 100%; transform: scaleX(0); height: 2px;
-            bottom: -4px; left: 0; background-color: #111111; transform-origin: bottom right; transition: transform 0.25s ease-out;
-        }
-        .cat-link:hover::after { transform: scaleX(1); transform-origin: bottom left; }
+        /* Navigation Hover Effect */
+        .nav-link { position: relative; display: inline-block; padding-bottom: 2px; font-weight: 600; color: #4b5563; }
+        .nav-link:hover { color: #111111; }
+        .nav-link.active { color: #111111; border-bottom: 3px solid #db2777; } 
+
+        /* Banner styling */
+        .banner-overlay { background: linear-gradient(to right, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 100%); }
+        
+        /* Compact Product Card */
+        .product-card { background: white; border: 1px solid #e5e7eb; transition: box-shadow 0.2s; }
+        .product-card:hover { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed top-20 left-1/2 transform -translate-x-1/2 z-[100] hidden bg-gray-900 text-white px-5 py-3 rounded-full shadow-xl flex items-center gap-3 w-max max-w-[90vw]">
-        <i class="fa-solid fa-check-circle text-green-400"></i>
+    <div id="toast" class="fixed top-20 left-1/2 transform -translate-x-1/2 z-[100] hidden bg-gray-900 text-white px-5 py-3 rounded-full shadow-xl flex items-center gap-3 w-max max-w-[90vw] transition-all">
+        <i class="fa-solid fa-circle-check text-brand-primary"></i>
         <span id="toast-msg" class="text-sm font-medium">Notification</span>
     </div>
 
+    <!-- TOP HEADER -->
+    <div class="bg-white w-full border-b border-gray-100 hidden md:block">
+        <div class="max-w-[1400px] mx-auto px-4 flex justify-center space-x-6 py-2 text-[11px] font-bold uppercase text-gray-500 tracking-wider">
+            <button onclick="window.showView('about-view')" class="hover:text-brand-primary transition-colors">About Us</button>
+            <button onclick="window.showView('contact-view')" class="hover:text-brand-primary transition-colors">Contact Us</button>
+        </div>
+    </div>
+
     <!-- MAIN HEADER -->
-    <header class="w-full bg-white z-50 border-b border-gray-200 sticky top-0">
-        <div class="max-w-[1400px] mx-auto px-4 py-3 sm:px-6 lg:px-8">
+    <header class="w-full bg-white z-50 border-b border-gray-200 sticky top-0 shadow-sm">
+        <div class="max-w-[1400px] mx-auto px-4 py-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between gap-4 md:gap-8">
-                <!-- Logo & Mobile Menu Toggle -->
-                <div class="flex-shrink-0 cursor-pointer flex items-center gap-3">
-                    <button onclick="window.toggleMobileMenu()" class="md:hidden text-gray-700 hover:text-black focus:outline-none p-1">
-                        <i class="fa-solid fa-bars text-xl"></i>
-                    </button>
-                    <img src="image2.png" alt="Bliss Bela" class="h-8 md:h-12 object-contain" onclick="window.showView('home-view')" onerror="this.src='https://via.placeholder.com/150x50?text=Bliss+Bela'">
+                <!-- Logo -->
+                <div class="flex-shrink-0 cursor-pointer flex items-center">
+                    <button onclick="window.toggleMobileMenu()" class="md:hidden text-gray-700 mr-3 text-xl"><i class="fa-solid fa-bars"></i></button>
+                    <!-- Brand Logo -->
+                    <img src="image2.png" alt="Bliss Bela" class="h-10 md:h-14 object-contain" onclick="window.showView('home-view')">
                 </div>
 
-                <!-- Desktop Search Bar -->
-                <div class="hidden md:flex flex-1 max-w-3xl mx-auto">
-                    <div class="flex w-full border-2 border-brand-dark rounded-full overflow-hidden h-11 hover:shadow-sm transition-shadow focus-within:border-brand-accent bg-gray-50">
-                        <input type="text" id="desktop-search" onkeypress="window.handleSearch(event)" placeholder="Search for anything..." class="flex-1 px-5 py-2 bg-transparent outline-none text-sm text-gray-800 placeholder-gray-500">
-                        <button onclick="window.handleSearch({type:'click'})" class="bg-brand-dark text-white px-8 hover:bg-gray-800 transition-colors flex items-center justify-center">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </button>
+                <!-- Search Bar -->
+                <div class="hidden md:flex flex-1 max-w-2xl mx-auto">
+                    <div class="flex w-full border border-gray-300 bg-gray-50 rounded-sm overflow-hidden h-10 focus-within:border-brand-primary transition-colors">
+                        <input type="text" id="desktop-search" onkeypress="window.handleSearch(event)" placeholder="Search for premium skincare..." class="flex-1 px-4 py-2 bg-transparent outline-none text-sm">
+                        <button onclick="window.handleSearch({type:'click'})" class="text-gray-500 px-4 hover:text-brand-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
                     </div>
                 </div>
 
                 <!-- Right Icons -->
-                <div class="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
-                    <button onclick="window.toggleAuth()" class="hidden sm:block text-sm font-semibold text-gray-700 hover:text-black hover:bg-gray-100 px-4 py-2 rounded-full transition-colors">
-                        Sign In
+                <div class="flex items-center space-x-4 md:space-x-6 flex-shrink-0">
+                    <button class="hidden sm:flex items-center text-xs font-bold text-gray-700 hover:text-brand-primary uppercase transition-colors">
+                        <i class="fa-regular fa-user mr-2 text-lg"></i> Login
                     </button>
-                    <button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-700 hover:text-black">
-                        <i class="fa-regular fa-heart text-xl"></i>
-                    </button>
-                    <button onclick="window.openCart()" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-700 hover:text-black relative">
-                        <i class="fa-solid fa-cart-shopping text-lg"></i>
-                        <span class="cart-count absolute top-1 right-0 bg-brand-accent text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center shadow-sm">0</span>
+                    <button onclick="window.openCart()" class="flex items-center text-gray-700 hover:text-brand-primary group relative transition-colors">
+                        <i class="fa-solid fa-cart-shopping text-2xl"></i>
+                        <div class="ml-2 flex flex-col items-start hidden sm:flex">
+                            <span class="text-[10px] font-bold bg-brand-dark text-white px-1.5 rounded-sm cart-count mb-0.5">0 CART</span>
+                            <span class="text-xs font-bold" id="header-cart-price">$0.00</span>
+                        </div>
+                        <span class="sm:hidden cart-count absolute -top-1 -right-2 bg-brand-primary text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">0</span>
                     </button>
                 </div>
             </div>
             
-            <!-- Mobile Search Bar -->
-            <div class="mt-3 md:hidden flex w-full border-2 border-gray-300 rounded-full overflow-hidden h-10 bg-gray-50 focus-within:border-brand-dark transition-colors">
-                <input type="text" id="mobile-search" onkeypress="window.handleSearch(event)" placeholder="Search for anything..." class="flex-1 px-4 py-1 bg-transparent outline-none text-sm text-gray-800">
-                <button onclick="window.handleSearch({type:'click'})" class="bg-brand-dark text-white px-5 flex items-center justify-center">
-                    <i class="fa-solid fa-magnifying-glass text-sm"></i>
-                </button>
+            <!-- Mobile Search -->
+            <div class="mt-3 md:hidden flex w-full border border-gray-300 rounded-sm overflow-hidden h-10 bg-gray-50 focus-within:border-brand-primary transition-colors">
+                <input type="text" id="mobile-search" onkeypress="window.handleSearch(event)" placeholder="Search products..." class="flex-1 px-4 py-1 bg-transparent outline-none text-sm">
+                <button onclick="window.handleSearch({type:'click'})" class="text-gray-500 px-4"><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
         </div>
 
-        <!-- Sub Navigation -->
-        <div class="hidden md:block w-full border-t border-gray-100">
-            <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-center gap-8 py-3 text-sm font-medium text-gray-700 overflow-x-auto no-scrollbar">
-                    <button onclick="window.showCategory('Gifts')" class="cat-link hover:text-black whitespace-nowrap"><i class="fa-solid fa-gift mr-2"></i>Gifts</button>
-                    <button onclick="window.showCategory('Skincare')" class="cat-link hover:text-black whitespace-nowrap">Skincare</button>
-                    <button onclick="window.showCategory('Haircare')" class="cat-link hover:text-black whitespace-nowrap">Haircare</button>
-                    <button onclick="window.showCategory('Makeup')" class="cat-link hover:text-black whitespace-nowrap">Makeup</button>
-                    <button onclick="window.showCategory('Fragrance')" class="cat-link hover:text-black whitespace-nowrap">Fragrance</button>
-                    <button onclick="window.showCategory('All')" class="cat-link hover:text-black whitespace-nowrap font-bold">Shop All</button>
+        <!-- Categories Navigation -->
+        <div class="hidden md:block w-full border-t border-gray-100 bg-white">
+            <div class="max-w-[1400px] mx-auto px-4">
+                <div class="flex items-center justify-center space-x-8 py-3 text-sm overflow-x-auto no-scrollbar">
+                    <button onclick="window.showCategory('All')" class="nav-link active">Shop All</button>
+                    <button onclick="window.showCategory('Skincare')" class="nav-link">Skincare</button>
+                    <button onclick="window.showCategory('Haircare')" class="nav-link">Haircare</button>
+                    <button onclick="window.showCategory('Makeup')" class="nav-link">Makeup</button>
+                    <button onclick="window.showCategory('Fragrance')" class="nav-link">Fragrances</button>
+                    <button onclick="window.showCategory('All')" class="bg-brand-dark text-white font-bold px-4 py-1 rounded-sm hover:bg-brand-primary transition-colors">Best Sellers</button>
                 </div>
             </div>
         </div>
@@ -149,147 +136,432 @@
 
     <!-- Mobile Sidebar Menu -->
     <div id="mobile-menu" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="window.toggleMobileMenu()"></div>
-        <div class="absolute inset-y-0 left-0 max-w-[280px] w-full bg-white shadow-2xl transform transition-transform duration-300 -translate-x-full flex flex-col" id="mobile-menu-panel">
-            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                <h2 class="font-bold text-lg text-brand-dark">Menu</h2>
-                <button onclick="window.toggleMobileMenu()" class="text-gray-500 hover:text-black p-2 rounded-full hover:bg-gray-200 transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+        <div class="absolute inset-0 bg-black/60" onclick="window.toggleMobileMenu()"></div>
+        <div class="absolute inset-y-0 left-0 w-64 bg-white shadow-2xl transform transition-transform duration-300 -translate-x-full flex flex-col" id="mobile-menu-panel">
+            <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+                <img src="image2.png" alt="Bliss Bela" class="h-8 object-contain">
+                <button onclick="window.toggleMobileMenu()" class="text-gray-500 hover:text-brand-primary"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            <div class="flex flex-col py-2 overflow-y-auto">
-                <button onclick="window.toggleMobileMenu(); window.showView('home-view')" class="text-left px-6 py-4 font-medium text-gray-800 hover:bg-gray-50 border-b border-gray-100 flex items-center gap-3"><i class="fa-solid fa-house w-5"></i> Home</button>
-                <button onclick="window.toggleMobileMenu(); window.showCategory('Skincare')" class="text-left px-6 py-4 font-medium text-gray-800 hover:bg-gray-50 border-b border-gray-100 flex items-center gap-3"><i class="fa-solid fa-spa w-5"></i> Skincare</button>
-                <button onclick="window.toggleMobileMenu(); window.showCategory('Haircare')" class="text-left px-6 py-4 font-medium text-gray-800 hover:bg-gray-50 border-b border-gray-100 flex items-center gap-3"><i class="fa-solid fa-spray-can w-5"></i> Haircare</button>
-                <button onclick="window.toggleMobileMenu(); window.showCategory('Makeup')" class="text-left px-6 py-4 font-medium text-gray-800 hover:bg-gray-50 border-b border-gray-100 flex items-center gap-3"><i class="fa-solid fa-eye w-5"></i> Makeup</button>
-                <button onclick="window.toggleMobileMenu(); window.showCategory('Fragrance')" class="text-left px-6 py-4 font-medium text-gray-800 hover:bg-gray-50 border-b border-gray-100 flex items-center gap-3"><i class="fa-solid fa-wind w-5"></i> Fragrance</button>
-                
-                <div class="px-6 py-6 mt-auto">
-                    <button onclick="window.toggleMobileMenu(); window.toggleAuth()" class="w-full bg-brand-dark text-white py-3 rounded-full font-semibold hover:bg-gray-800 transition-colors shadow-md">
-                        Sign In / Register
-                    </button>
-                </div>
+            <div class="flex flex-col py-2 overflow-y-auto text-sm font-bold text-gray-700">
+                <button onclick="window.toggleMobileMenu(); window.showView('home-view')" class="text-left px-6 py-4 border-b hover:text-brand-primary">Home</button>
+                <button onclick="window.toggleMobileMenu(); window.showView('about-view')" class="text-left px-6 py-4 border-b hover:text-brand-primary">About Us</button>
+                <button onclick="window.toggleMobileMenu(); window.showView('contact-view')" class="text-left px-6 py-4 border-b hover:text-brand-primary">Contact Us</button>
+                <button onclick="window.toggleMobileMenu(); window.showCategory('Skincare')" class="text-left px-6 py-4 border-b hover:text-brand-primary">Skincare</button>
+                <button onclick="window.toggleMobileMenu(); window.showCategory('Haircare')" class="text-left px-6 py-4 border-b hover:text-brand-primary">Haircare</button>
+                <button onclick="window.toggleMobileMenu(); window.showCategory('Makeup')" class="text-left px-6 py-4 border-b hover:text-brand-primary">Makeup</button>
+                <button onclick="window.toggleMobileMenu(); window.showCategory('All')" class="text-left px-6 py-4 bg-brand-dark text-white mt-auto">Shop All</button>
             </div>
         </div>
     </div>
 
-    <!-- MAIN CONTENT AREA -->
-    <div class="flex-grow flex flex-col w-full">
+    <!-- MAIN CONTENT -->
+    <div class="flex-grow flex flex-col w-full pb-16">
+        
         <!-- 1. HOME VIEW -->
-        <div id="home-view" class="view-transition opacity-100 translate-y-0 w-full mb-16">
-            <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-4 md:mt-8">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:h-[350px] lg:h-[420px]">
-                    <div class="md:col-span-2 bg-[#f4ece4] rounded-2xl p-8 md:p-12 flex flex-col justify-center items-center text-center shadow-sm relative overflow-hidden">
-                        <div class="relative z-10">
-                            <h2 class="text-3xl md:text-5xl lg:text-6xl font-serif text-[#1e3b38] mb-4 md:mb-6 leading-tight">Dive into our <br>dreamiest beauty finds</h2>
-                            <button onclick="window.showCategory('All')" class="bg-[#1e3b38] text-white rounded-full px-8 py-3.5 font-semibold text-sm hover:bg-black transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200">
-                                Shop our favorites
-                            </button>
-                        </div>
-                    </div>
-                    <div class="md:col-span-1 rounded-2xl overflow-hidden shadow-sm hidden md:block relative group">
-                        <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800" alt="Beauty" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                    </div>
-                    <div class="md:col-span-1 rounded-2xl overflow-hidden relative shadow-sm cursor-pointer group h-[200px] md:h-auto" onclick="window.showCategory('Skincare')">
-                        <img src="https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?q=80&w=800&auto=format&fit=crop" alt="Skincare" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                        <div class="absolute bottom-0 left-0 right-0 p-5 md:p-8">
-                            <h3 class="text-white text-lg md:text-2xl font-bold mb-2 leading-tight">These are the very best skincare finds</h3>
-                            <p class="text-white font-semibold text-xs md:text-sm underline decoration-2 underline-offset-4 group-hover:text-gray-200">Shop now</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Categories Section -->
-            <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-12 md:mt-24">
-                <h2 class="text-xl md:text-2xl font-medium text-gray-900 mb-5 md:mb-6">Jump into featured categories</h2>
-                <div id="dynamic-home-categories" class="flex md:grid md:grid-cols-4 gap-4 md:gap-6 overflow-x-auto no-scrollbar pb-6 snap-x touch-pan-x">
-                    <div class="w-full py-10 flex justify-center col-span-full loader-container">
-                        <div class="loader-ring"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Best Sellers Section -->
-            <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-10 md:mt-20">
-                <h2 class="text-xl md:text-2xl font-medium text-gray-900 mb-5 md:mb-6">Discover our best of 2026</h2>
-                <div id="home-sec-2" class="flex gap-4 md:gap-6 overflow-x-auto no-scrollbar pb-6 snap-x touch-pan-x">
-                    <div class="w-full py-10 flex justify-center col-span-full loader-container">
-                        <div class="loader-ring"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 2. COLLECTION VIEW -->
-        <div id="collection-view" class="view-transition hidden opacity-0 translate-y-8 w-full py-8 md:py-16 bg-white">
-            <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-8 md:mb-12">
-                    <h1 id="collection-main-title" class="text-3xl md:text-5xl font-serif text-gray-900 mb-3">Bliss Bela's Best Finds</h1>
-                    <p class="text-sm text-gray-600">Your one-stop shop</p>
-                </div>
-
-                <div id="loading-state" class="w-full py-20 flex flex-col items-center justify-center loader-container">
-                    <div class="loader-ring mb-4"></div>
-                </div>
-
-                <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 hidden animate-fade-in"></div>
-
-                <div id="empty-state" class="hidden w-full py-20 text-center px-4">
-                    <i class="fa-regular fa-face-frown text-4xl md:text-5xl text-gray-300 mb-4"></i>
-                    <h3 class="text-lg md:text-xl font-semibold text-gray-900 mb-2">No items found</h3>
-                    <p class="text-sm text-gray-500">Try checking out our other categories or adjusting your search.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. PRODUCT DETAILS VIEW -->
-        <div id="product-view" class="view-transition hidden opacity-0 translate-y-8 w-full py-6 md:py-12 bg-white">
-            <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-                <button onclick="window.showCategory('All')" class="text-brand-accent hover:underline font-medium text-sm flex items-center mb-6 transition-colors w-max">
-                    <i class="fa-solid fa-chevron-left mr-2 text-xs"></i> Back to search
-                </button>
-
-                <div class="flex flex-col md:flex-row gap-6 lg:gap-12">
-                    <div class="w-full md:w-1/2 lg:w-3/5 flex flex-col-reverse md:flex-row gap-3 md:gap-4">
-                        <div class="flex md:flex-col gap-2 md:gap-3 overflow-x-auto md:overflow-y-auto no-scrollbar md:w-20 flex-shrink-0 snap-x">
-                            <div class="w-16 h-16 md:w-full md:h-20 rounded-md border-2 border-black p-1 cursor-pointer flex-shrink-0 bg-white snap-start"><img id="thumb-1" src="" class="w-full h-full object-contain"></div>
-                        </div>
-                        <div class="w-full bg-[#f8f8f8] rounded-xl flex items-center justify-center p-6 md:p-8 relative flex-grow min-h-[300px] md:min-h-[500px] border border-gray-100">
-                            <div id="detail-badge-container" class="absolute top-4 left-4 z-10"></div>
-                            <img id="detail-image" src="" alt="Product" class="w-full h-full max-h-[350px] md:max-h-[450px] object-contain mix-blend-multiply">
+        <div id="home-view" class="w-full">
+            <div class="max-w-[1400px] mx-auto px-2 sm:px-6 lg:px-8 mt-4 md:mt-6">
+                <!-- Hero Grid Layout -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4">
+                    <!-- Main Large Banner -->
+                    <div class="lg:col-span-2 relative bg-gray-200 rounded-sm overflow-hidden h-[300px] sm:h-[450px] lg:h-[500px] group cursor-pointer" onclick="window.showCategory('Skincare')">
+                        <img src="https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?q=80&w=1200&auto=format&fit=crop" alt="Skincare" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 banner-overlay flex flex-col justify-center p-8 md:p-12">
+                            <h2 class="text-white text-3xl md:text-5xl font-light mb-2">Elevate your daily</h2>
+                            <h2 class="text-white text-3xl md:text-5xl font-bold mb-4 text-brand-light">beauty routine</h2>
+                            <div class="w-20 border-b-2 border-brand-primary mb-4"></div>
+                            <p class="text-gray-200 text-sm md:text-lg max-w-md mb-6">Discover our award-winning skincare collection crafted with premium ingredients for a radiant glow.</p>
+                            <button class="w-max bg-brand-primary text-white px-6 py-2.5 text-sm font-bold uppercase tracking-wider rounded-sm hover:bg-brand-accent transition-colors">Shop Skincare</button>
                         </div>
                     </div>
 
-                    <div class="w-full md:w-1/2 lg:w-2/5 flex flex-col">
-                        <h1 id="detail-title" class="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 leading-tight"></h1>
-                        <div class="mb-6">
-                            <p class="text-3xl md:text-4xl font-bold text-gray-900 mb-1" id="detail-price"></p>
-                            <div id="detail-old-price-container" class="text-sm text-gray-600 mb-2 hidden">
-                                List price: <span id="detail-old-price" class="line-through"></span> <span id="detail-discount-percent" class="font-bold text-gray-900 ml-1"></span>
+                    <!-- Side Banners -->
+                    <div class="grid grid-cols-2 lg:grid-cols-1 grid-rows-1 lg:grid-rows-2 gap-2 sm:gap-4 h-auto lg:h-[500px]">
+                        <!-- Top Small Banner -->
+                        <div class="relative bg-brand-light rounded-sm overflow-hidden cursor-pointer group flex items-center justify-center p-4 border border-gray-200" onclick="window.showCategory('Makeup')">
+                            <div class="absolute top-0 right-0 bg-brand-primary text-white text-xs font-bold px-3 py-1 m-2 md:m-4 rounded-sm shadow-md">15% OFF</div>
+                            <div class="w-1/2 z-10 pr-2 pl-2">
+                                <h3 class="text-brand-primary font-black text-sm md:text-xl uppercase mb-1 drop-shadow-sm">LUXURY</h3>
+                                <h3 class="text-gray-800 font-bold text-xs md:text-lg mb-2">Makeup Kits</h3>
+                                <span class="text-[9px] md:text-xs text-gray-500 font-medium">Limited Time Only</span>
+                            </div>
+                            <div class="w-1/2 h-full relative">
+                                <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500">
                             </div>
                         </div>
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-6">
-                            <h3 class="text-sm font-semibold text-gray-900 mb-2">Item Description</h3>
-                            <p class="text-sm text-gray-600 leading-relaxed" id="detail-description"></p>
+                        <!-- Bottom Small Banner -->
+                        <div class="relative bg-gray-900 rounded-sm overflow-hidden cursor-pointer group flex items-center justify-center" onclick="window.showCategory('Fragrance')">
+                            <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+                                <span class="bg-brand-primary text-white text-[10px] md:text-xs font-bold px-3 py-1 tracking-widest shadow-sm rounded-sm uppercase mb-2">NEW ARRIVAL</span>
+                                <h3 class="text-white font-serif text-lg md:text-2xl mb-1">Signature Scents</h3>
+                                <p class="text-gray-300 text-xs md:text-sm">Find your perfect fragrance</p>
+                            </div>
                         </div>
-                        <div class="flex items-center flex-wrap gap-3 mb-8">
-                            <span class="text-gray-600 font-medium">Qty:</span>
-                            <input type="number" id="detail-qty-input" value="1" min="1" class="w-16 border border-gray-300 rounded-md px-2 py-1.5 text-center" onchange="window.changeDetailQtyDirect(this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Products Section -->
+            <div class="max-w-[1400px] mx-auto px-2 sm:px-6 lg:px-8 mt-12 text-center">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 uppercase tracking-wider relative inline-block">
+                    Featured Products
+                    <span class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-brand-primary"></span>
+                </h2>
+                
+                <div id="home-sec-2" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4 text-left mt-4">
+                    <div class="w-full py-10 flex justify-center col-span-full loader-container"><div class="loader-ring"></div></div>
+                </div>
+                
+                <button onclick="window.showCategory('All')" class="mt-10 bg-brand-dark text-white px-8 py-3 text-sm font-bold uppercase tracking-widest hover:bg-brand-primary transition-colors rounded-sm shadow-md">
+                    View Entire Collection
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. ABOUT US VIEW -->
+        <div id="about-view" class="hidden w-full bg-white pb-16">
+            <!-- Breadcrumb -->
+            <div class="w-full bg-gray-50 py-3 border-b border-gray-100 mb-8 md:mb-16">
+                <div class="max-w-[1200px] mx-auto px-6 text-xs text-gray-500 font-medium">
+                    Home > <span class="text-brand-primary">About Us</span>
+                </div>
+            </div>
+
+            <div class="max-w-[1200px] mx-auto px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row gap-12 lg:gap-24 items-center">
+                    
+                    <!-- Left: Text Content -->
+                    <div class="w-full md:w-1/2">
+                        <div class="border-l-4 border-brand-primary pl-4 mb-6">
+                            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">About Bliss Bela</h1>
                         </div>
-                        <div class="flex flex-col gap-3 mt-auto">
-                            <button onclick="window.addDetailToCart(true)" class="w-full bg-brand-accent text-white rounded-full py-3.5 md:py-4 font-bold text-sm hover:bg-blue-700">Buy It Now</button>
-                            <button onclick="window.addDetailToCart(false)" class="w-full bg-white border-2 border-brand-accent text-brand-accent rounded-full py-3.5 md:py-4 font-bold text-sm hover:bg-blue-50">Add to cart</button>
+                        
+                        <p class="text-sm text-gray-600 leading-relaxed mb-4 text-justify">
+                            <strong class="text-gray-900">BLISS BELA</strong> is a premier beauty and skincare brand dedicated to enhancing your natural radiance. Established with a passion for quality and innovation, we offer a diverse range of modern cosmetics and deeply nourishing skincare solutions crafted with the finest ingredients.
+                        </p>
+                        <p class="text-sm text-gray-600 leading-relaxed mb-10 text-justify">
+                            Our success has grown from our commitment to producing high-quality, cruelty-free beauty products combined with outstanding customer service. Whether you are looking for an everyday glow or a luxurious self-care routine, our friendly beauty experts are here to assist you in finding your perfect match.
+                        </p>
+
+                        <!-- Information Links -->
+                        <div class="pt-8 border-t border-gray-200 w-full flex flex-col sm:flex-row justify-between gap-6">
+                            <div>
+                                <h4 class="font-bold text-gray-900 mb-3 text-sm">Customer Support</h4>
+                                <div class="grid grid-cols-2 gap-x-8 gap-y-2 text-xs text-gray-600 font-medium">
+                                    <a href="#" onclick="window.showView('contact-view')" class="hover:text-brand-primary transition-colors">Contact Us</a>
+                                    <a href="#" class="hover:text-brand-primary transition-colors">Shipping & Returns</a>
+                                    <a href="#" class="hover:text-brand-primary transition-colors">Privacy Policy</a>
+                                    <a href="#" class="hover:text-brand-primary transition-colors">Terms of Service</a>
+                                </div>
+                            </div>
+                            <div class="text-center sm:text-right">
+                                <img src="image2.png" alt="Bliss Bela" class="h-8 mx-auto sm:ml-auto sm:mr-0 mb-3 opacity-80">
+                                <div class="flex justify-center sm:justify-end gap-4 text-gray-400 text-lg">
+                                    <i class="fa-brands fa-facebook hover:text-brand-primary cursor-pointer transition-colors"></i>
+                                    <i class="fa-brands fa-instagram hover:text-brand-primary cursor-pointer transition-colors"></i>
+                                    <i class="fa-brands fa-pinterest hover:text-brand-primary cursor-pointer transition-colors"></i>
+                                    <i class="fa-brands fa-tiktok hover:text-brand-primary cursor-pointer transition-colors"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Overlapping Images -->
+                    <div class="w-full md:w-1/2 relative h-[400px] md:h-[500px] flex items-center justify-center mt-8 md:mt-0">
+                        <!-- Back Image -->
+                        <div class="absolute right-0 top-0 w-[75%] h-[75%] rounded-sm overflow-hidden shadow-xl z-10">
+                            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <!-- Front Overlapping Image -->
+                        <div class="absolute left-0 bottom-0 w-[60%] h-[60%] rounded-sm overflow-hidden shadow-2xl z-20 border-4 border-white">
+                            <img src="https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <!-- Floating Badge -->
+                        <div class="absolute left-4 top-1/3 transform -translate-y-1/2 bg-white text-brand-dark font-bold text-center px-5 py-4 rounded-sm shadow-xl z-30 border-l-4 border-brand-primary max-w-[140px] text-xs">
+                            <i class="fa-solid fa-leaf text-brand-primary text-xl mb-2"></i><br>
+                            100% Premium <br> Quality Assured
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 4. CHECKOUT VIEW -->
-        <div id="checkout-view" class="view-transition hidden opacity-0 translate-y-8 w-full py-8 md:py-16 bg-gray-50">
-            <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Checkout</h1>
-                <p>Checkout system needs to be integrated.</p>
+        <!-- 2.5 CONTACT US VIEW (New) -->
+        <div id="contact-view" class="hidden w-full bg-white pb-16">
+            <!-- Breadcrumb -->
+            <div class="w-full bg-gray-50 py-3 border-b border-gray-100 mb-8 md:mb-12">
+                <div class="max-w-[1200px] mx-auto px-6 text-xs text-gray-500 font-medium">
+                    Home > <span class="text-brand-primary">Contact Us</span>
+                </div>
+            </div>
+
+            <div class="max-w-[1200px] mx-auto px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-3">Get in Touch</h1>
+                    <p class="text-gray-500 text-sm max-w-lg mx-auto">Have a question about our products or your order? We're here to help. Fill out the form below or reach us directly.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white">
+                    <!-- Contact Info -->
+                    <div class="bg-brand-light p-8 md:p-10 rounded-sm border border-pink-100">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6 border-b border-pink-200 pb-3">Contact Information</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-brand-primary shadow-sm flex-shrink-0"><i class="fa-solid fa-location-dot"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 text-sm mb-1">Headquarters</h4>
+                                    <p class="text-sm text-gray-600 leading-relaxed">Thiruwankatiya,Karagoda,<br>Galle<br>Sri Lanka</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-brand-primary shadow-sm flex-shrink-0"><i class="fa-solid fa-phone"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 text-sm mb-1">Phone</h4>
+                                    <p class="text-sm text-gray-600">+94 77 706 4487<br><span class="text-xs text-gray-400">Mon-Fri: 9AM - 6PM EST</span></p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-brand-primary shadow-sm flex-shrink-0"><i class="fa-solid fa-envelope"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 text-sm mb-1">Email</h4>
+                                    <p class="text-sm text-gray-600">kpr46084@gmail.com<br>Demowholesale@blissbela.com</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="p-2">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6">Send us a Message</h3>
+                        <form onsubmit="event.preventDefault(); window.showToast('Message sent successfully! We will get back to you soon.'); this.reset();" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">First Name</label>
+                                    <input type="text" required class="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:border-brand-primary outline-none text-sm transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">Last Name</label>
+                                    <input type="text" required class="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:border-brand-primary outline-none text-sm transition-colors">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Email Address</label>
+                                <input type="email" required class="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:border-brand-primary outline-none text-sm transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Message</label>
+                                <textarea required rows="4" class="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:border-brand-primary outline-none text-sm transition-colors resize-none"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-brand-dark text-white py-3 rounded-sm font-bold text-sm uppercase tracking-wider hover:bg-brand-primary transition-colors mt-2">
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. COLLECTION VIEW -->
+        <div id="collection-view" class="hidden w-full bg-white pb-16">
+            <!-- Breadcrumb -->
+            <div class="w-full bg-gray-50 py-3 border-b border-gray-100 mb-6">
+                <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 text-xs text-gray-500 font-medium">
+                    Home > <span class="text-brand-primary" id="breadcrumb-category">Products</span>
+                </div>
+            </div>
+
+            <div class="max-w-[1400px] mx-auto px-2 sm:px-6 lg:px-8">
+                <!-- Sorting Bar -->
+                <div class="flex justify-between items-center mb-6 py-2 border-b border-gray-200">
+                    <div class="flex items-center text-xs font-bold text-gray-700">
+                        <span class="mr-2">Sort By:</span>
+                        <select class="border border-gray-300 rounded-sm px-2 py-1.5 outline-none focus:border-brand-primary">
+                            <option>Best Selling</option>
+                            <option>Price: Low to High</option>
+                            <option>Price: High to Low</option>
+                            <option>Newest Arrivals</option>
+                        </select>
+                    </div>
+                    <div class="hidden sm:flex items-center text-xs font-bold text-gray-700">
+                        <input type="checkbox" class="mr-2 accent-brand-primary" checked> In Stock Only
+                    </div>
+                </div>
+
+                <div id="loading-state" class="w-full py-20 flex justify-center loader-container"><div class="loader-ring"></div></div>
+
+                <!-- COMPACT GRID -->
+                <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4 hidden"></div>
+
+                <div id="empty-state" class="hidden w-full py-20 text-center">
+                    <i class="fa-solid fa-box-open text-4xl text-gray-300 mb-4"></i>
+                    <h3 class="text-lg font-bold text-gray-900">No products found</h3>
+                    <p class="text-sm text-gray-500 mt-1">Try adjusting your category or search term.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. PRODUCT DETAILS VIEW -->
+        <div id="product-view" class="hidden w-full bg-white pb-16">
+            <div class="w-full bg-gray-50 py-3 border-b border-gray-100 mb-6">
+                <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 text-xs text-gray-500 font-medium">
+                    <button onclick="window.showCategory('All')" class="hover:text-brand-primary transition-colors"><i class="fa-solid fa-chevron-left mr-1"></i> Back to Collection</button>
+                </div>
+            </div>
+            
+            <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row gap-8 lg:gap-16">
+                    <!-- Product Image -->
+                    <div class="w-full md:w-1/2 border border-gray-100 p-6 relative flex justify-center items-center bg-[#fcfcfc] rounded-sm min-h-[350px]">
+                        <div id="detail-badge-container" class="absolute top-4 left-4 z-10"></div>
+                        <button class="absolute top-4 right-4 text-gray-300 hover:text-red-500 transition-colors text-xl"><i class="fa-solid fa-heart"></i></button>
+                        <img id="detail-image" src="" class="max-h-[450px] object-contain mix-blend-multiply drop-shadow-sm">
+                    </div>
+                    
+                    <!-- Product Info -->
+                    <div class="w-full md:w-1/2 flex flex-col pt-2">
+                        <span class="text-xs font-bold tracking-widest uppercase text-brand-primary mb-2" id="detail-category-tag">Skincare</span>
+                        <h1 id="detail-title" class="text-2xl md:text-3xl font-bold text-gray-900 mb-3 leading-tight"></h1>
+                        
+                        <!-- Review Summary -->
+                        <div class="flex items-center gap-2 mb-6 cursor-pointer" onclick="document.getElementById('reviews-section').scrollIntoView({behavior: 'smooth'})">
+                            <div class="flex text-yellow-400 text-xs"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+                            <span class="text-xs font-medium text-gray-500 hover:text-brand-primary underline">(128 Reviews)</span>
+                        </div>
+
+                        <div class="border-b border-gray-100 pb-6 mb-6">
+                            <div class="flex items-end gap-3 mb-1">
+                                <p class="text-3xl font-bold text-gray-900" id="detail-price"></p>
+                                <div id="detail-old-price-container" class="text-sm text-gray-500 hidden mb-1">
+                                    <span id="detail-old-price" class="line-through"></span> <span id="detail-discount-percent" class="text-brand-primary font-bold ml-1"></span>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-gray-500 font-medium">* Taxes and shipping calculated at checkout</p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h4 class="text-sm font-bold text-gray-900 mb-2">Description</h4>
+                            <p class="text-sm text-gray-600 leading-relaxed" id="detail-description"></p>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="mt-auto">
+                            <div class="flex items-center gap-4 mb-5">
+                                <span class="text-gray-700 font-bold text-sm">Quantity:</span>
+                                <div class="flex items-center border border-gray-300 rounded-sm">
+                                    <button onclick="let v=document.getElementById('detail-qty-input'); v.value=Math.max(1, parseInt(v.value)-1); window.changeDetailQtyDirect(v.value)" class="px-3 py-1.5 text-gray-500 hover:bg-gray-50">-</button>
+                                    <input type="number" id="detail-qty-input" value="1" min="1" class="w-12 py-1.5 text-center font-bold text-gray-800 outline-none border-x border-gray-300" onchange="window.changeDetailQtyDirect(this.value)">
+                                    <button onclick="let v=document.getElementById('detail-qty-input'); v.value=parseInt(v.value)+1; window.changeDetailQtyDirect(v.value)" class="px-3 py-1.5 text-gray-500 hover:bg-gray-50">+</button>
+                                </div>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <button onclick="window.addDetailToCart(false)" class="flex-1 bg-white border-2 border-brand-dark text-brand-dark py-3.5 font-bold text-sm uppercase tracking-wider hover:bg-gray-50 transition-colors rounded-sm">Add to Cart</button>
+                                <button onclick="window.addDetailToCart(true)" class="flex-1 bg-brand-primary text-white py-3.5 font-bold text-sm uppercase tracking-wider hover:bg-brand-accent transition-colors shadow-md rounded-sm">Buy It Now</button>
+                            </div>
+                            
+                            <!-- Trust Badges -->
+                            <div class="flex items-center justify-center gap-6 mt-6 pt-6 border-t border-gray-100 text-gray-400">
+                                <div class="flex flex-col items-center gap-1"><i class="fa-solid fa-truck-fast text-lg"></i><span class="text-[9px] uppercase font-bold tracking-wider">Fast Ship</span></div>
+                                <div class="flex flex-col items-center gap-1"><i class="fa-solid fa-shield-halved text-lg"></i><span class="text-[9px] uppercase font-bold tracking-wider">Secure Pay</span></div>
+                                <div class="flex flex-col items-center gap-1"><i class="fa-solid fa-rotate-left text-lg"></i><span class="text-[9px] uppercase font-bold tracking-wider">Returns</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW: Customer Reviews Section -->
+                <div id="reviews-section" class="mt-16 border-t border-gray-200 pt-10 max-w-4xl mx-auto">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Customer Reviews</h3>
+                    
+                    <div class="flex flex-col md:flex-row items-center gap-8 mb-10 bg-gray-50 p-6 rounded-sm border border-gray-100">
+                        <div class="text-center md:border-r md:border-gray-200 md:pr-8">
+                            <p class="text-5xl font-black text-gray-900 mb-2">4.8</p>
+                            <div class="flex text-yellow-400 text-lg justify-center mb-1"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+                            <p class="text-xs text-gray-500 font-medium">Based on 128 Reviews</p>
+                        </div>
+                        <div class="flex-1 w-full">
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-xs"><span class="w-8 font-bold text-gray-600">5 <i class="fa-solid fa-star text-yellow-400 text-[10px]"></i></span><div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden"><div class="bg-gray-800 h-full w-[85%]"></div></div><span class="w-8 text-right text-gray-500">102</span></div>
+                                <div class="flex items-center gap-2 text-xs"><span class="w-8 font-bold text-gray-600">4 <i class="fa-solid fa-star text-yellow-400 text-[10px]"></i></span><div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden"><div class="bg-gray-800 h-full w-[10%]"></div></div><span class="w-8 text-right text-gray-500">20</span></div>
+                                <div class="flex items-center gap-2 text-xs"><span class="w-8 font-bold text-gray-600">3 <i class="fa-solid fa-star text-yellow-400 text-[10px]"></i></span><div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden"><div class="bg-gray-800 h-full w-[3%]"></div></div><span class="w-8 text-right text-gray-500">4</span></div>
+                                <div class="flex items-center gap-2 text-xs"><span class="w-8 font-bold text-gray-600">2 <i class="fa-solid fa-star text-yellow-400 text-[10px]"></i></span><div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden"><div class="bg-gray-800 h-full w-[2%]"></div></div><span class="w-8 text-right text-gray-500">2</span></div>
+                                <div class="flex items-center gap-2 text-xs"><span class="w-8 font-bold text-gray-600">1 <i class="fa-solid fa-star text-yellow-400 text-[10px]"></i></span><div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden"><div class="bg-gray-800 h-full w-[0%]"></div></div><span class="w-8 text-right text-gray-500">0</span></div>
+                            </div>
+                        </div>
+                        <div class="text-center md:pl-4">
+                            <button class="bg-white border border-gray-300 text-gray-800 font-bold text-xs uppercase tracking-wider px-6 py-3 hover:bg-gray-50 transition-colors">Write a Review</button>
+                        </div>
+                    </div>
+
+                    <!-- Review Items -->
+                    <div class="space-y-6">
+                        <!-- Review 1 -->
+                        <div class="border-b border-gray-100 pb-6">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-full bg-brand-light text-brand-primary flex items-center justify-center font-bold text-sm border border-pink-100">SJ</div>
+                                <div>
+                                    <span class="block font-bold text-sm text-gray-900">Sarah J. <i class="fa-solid fa-circle-check text-green-500 text-[10px] ml-1" title="Verified Buyer"></i></span>
+                                    <span class="block text-[10px] text-gray-400">2 days ago</span>
+                                </div>
+                            </div>
+                            <div class="flex text-yellow-400 text-xs mb-2"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                            <h4 class="font-bold text-gray-800 text-sm mb-1">Absolutely love this product!</h4>
+                            <p class="text-sm text-gray-600 leading-relaxed">The quality is amazing and it feels so luxurious on the skin. I have sensitive skin and this didn't cause any breakouts. Will definitely repurchase once I run out.</p>
+                        </div>
+                        <!-- Review 2 -->
+                        <div class="border-b border-gray-100 pb-6">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-sm border border-gray-200">MA</div>
+                                <div>
+                                    <span class="block font-bold text-sm text-gray-900">Michelle A. <i class="fa-solid fa-circle-check text-green-500 text-[10px] ml-1" title="Verified Buyer"></i></span>
+                                    <span class="block text-[10px] text-gray-400">1 week ago</span>
+                                </div>
+                            </div>
+                            <div class="flex text-yellow-400 text-xs mb-2"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
+                            <h4 class="font-bold text-gray-800 text-sm mb-1">Great value for the price</h4>
+                            <p class="text-sm text-gray-600 leading-relaxed">Fast shipping and beautiful packaging. The product itself works well, though the scent is a bit strong for my liking. Highly recommended for daily use regardless!</p>
+                        </div>
+                    </div>
+                    <div class="text-center mt-8">
+                        <button class="text-brand-primary font-bold text-sm hover:underline">Load More Reviews</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. CHECKOUT VIEW -->
+        <div id="checkout-view" class="hidden w-full py-12 bg-gray-50">
+            <div class="max-w-[800px] mx-auto px-4 sm:px-6 lg:px-8 bg-white p-6 md:p-8 border border-gray-200 shadow-sm rounded-sm">
+                <h1 class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Secure Checkout</h1>
+                <form id="checkout-form" onsubmit="window.processCheckout(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Full Name</label>
+                        <input type="text" id="cName" required class="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:border-brand-primary outline-none text-sm transition-colors">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="cEmail" required class="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:border-brand-primary outline-none text-sm transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Phone Number</label>
+                            <input type="text" id="cPhone" required class="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:border-brand-primary outline-none text-sm transition-colors">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Shipping Address</label>
+                        <textarea id="cAddress" required rows="2" class="w-full px-4 py-2.5 border border-gray-300 rounded-sm focus:border-brand-primary outline-none text-sm transition-colors resize-none"></textarea>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-gray-100">
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="font-bold text-gray-700">Total to Pay:</span>
+                            <span class="text-2xl font-black text-gray-900" id="checkout-total">$0.00</span>
+                        </div>
+                        <button type="submit" id="place-order-btn" class="w-full bg-brand-dark text-white py-3.5 rounded-sm font-bold text-sm uppercase tracking-wider hover:bg-brand-primary transition-colors shadow-md">
+                            Complete Order
+                        </button>
+                        <p class="text-center text-[10px] text-gray-400 mt-3"><i class="fa-solid fa-lock mr-1"></i> Secured by 256-bit SSL Encryption</p>
+                    </div>
+                </form>
             </div>
         </div>
     </div> 
@@ -297,150 +569,55 @@
     <!-- CART SLIDE-OVER -->
     <div id="cart-drawer" class="fixed inset-0 z-[120] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="window.closeCart()"></div>
-        <div class="absolute inset-y-0 right-0 max-w-md w-full flex">
-            <div class="w-full h-full bg-white shadow-2xl flex flex-col transform transition-transform duration-300 translate-x-full md:rounded-l-2xl" id="cart-panel">
-                <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
-                    <h2 class="text-xl font-bold text-gray-900">Your Cart</h2>
-                    <button onclick="window.closeCart()" class="text-gray-500 hover:text-black w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+        <div class="absolute inset-y-0 right-0 max-w-sm w-full flex">
+            <div class="w-full h-full bg-white flex flex-col transform translate-x-full transition-transform duration-300 border-l border-gray-200" id="cart-panel">
+                <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+                    <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wider"><i class="fa-solid fa-cart-shopping mr-2 text-brand-primary"></i> Your Cart</h2>
+                    <button onclick="window.closeCart()" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
                 </div>
-                <div class="flex-1 overflow-y-auto px-6 py-4" id="cart-items-container"></div>
-                <div class="border-t border-gray-200 p-6 bg-gray-50">
-                    <div class="flex justify-between text-lg font-bold text-gray-900 mb-2">
-                        <p>Total</p><p id="cart-total-price">$0.00</p>
+                <div class="flex-1 overflow-y-auto px-4 py-4" id="cart-items-container"></div>
+                <div class="border-t border-gray-200 p-6 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                    <div class="flex justify-between text-sm font-bold text-gray-800 mb-4 uppercase">
+                        <p>Subtotal</p><p id="cart-total-price" class="text-gray-900">$0.00</p>
                     </div>
-                    <button onclick="window.goToCheckout()" class="w-full bg-brand-dark text-white rounded-full py-4 font-bold hover:bg-gray-800">Checkout</button>
+                    <button onclick="window.goToCheckout()" class="w-full bg-brand-primary text-white rounded-sm py-3.5 font-bold text-sm uppercase tracking-widest hover:bg-brand-accent transition-colors shadow-md">Checkout</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- FOOTER WITH DYNAMIC CONTACT INFO -->
-    <footer class="bg-brand-dark text-white pt-16 pb-8 mt-auto">
-        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 border-b border-gray-800 pb-12 mb-8">
-                <div class="md:col-span-1">
-                    <img src="image4.png" alt="Bliss Bela" class="h-10 object-contain mb-6 filter brightness-0 invert" onerror="this.src='https://via.placeholder.com/150x50?text=Bliss+Bela'">
-                    <p class="text-gray-400 text-sm font-medium leading-relaxed">Premium beauty and skincare essentials, carefully curated and delivered to your doorstep.</p>
-                </div>
-                <div>
-                    <h3 class="font-bold text-lg mb-4 text-white">Shop</h3>
-                    <ul class="space-y-3 text-gray-400 font-medium text-sm">
-                        <li><button onclick="window.showCategory('Skincare')" class="hover:text-white transition-colors">Skincare</button></li>
-                        <li><button onclick="window.showCategory('Haircare')" class="hover:text-white transition-colors">Haircare</button></li>
-                        <li><button onclick="window.showCategory('Makeup')" class="hover:text-white transition-colors">Makeup</button></li>
-                        <li><button onclick="window.showCategory('All')" class="hover:text-white transition-colors">All Products</button></li>
-                    </ul>
-                </div>
-                
-                <!-- Dynamic Contact Info Section -->
-                <div>
-                    <h3 class="font-bold text-lg mb-4 text-white">Contact Us</h3>
-                    <ul class="space-y-4 text-gray-400 font-medium text-sm" id="footer-contact-info">
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-location-dot mt-1 text-gray-500 w-4"></i>
-                            <span id="contact-address">123 Beauty Avenue, NY 10012, USA</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i class="fa-solid fa-phone text-gray-500 w-4"></i>
-                            <span id="contact-phone">+1 (800) 123-4567</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i class="fa-solid fa-envelope text-gray-500 w-4"></i>
-                            <span id="contact-email">support@blissbela.com</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="font-bold text-lg mb-4 text-white">Stay in the loop</h3>
-                    <p class="text-sm text-gray-400 mb-4">Subscribe to our newsletter for exclusive offers.</p>
-                    <div class="flex bg-gray-800 rounded-full overflow-hidden p-1 border border-gray-700 focus-within:border-gray-500 transition-colors">
-                        <input type="email" placeholder="Email address" class="bg-transparent px-4 py-2 w-full focus:outline-none text-white text-sm">
-                        <button class="bg-white text-brand-dark px-5 py-2 rounded-full font-bold text-xs hover:bg-gray-200 transition-colors">Subscribe</button>
-                    </div>
-                </div>
-            </div>
-            <div class="flex flex-col md:flex-row justify-between items-center text-gray-500 text-xs font-medium gap-4">
-                <span>&copy; 2026 Bliss Bela. All rights reserved.</span>
-                <div class="flex gap-4 text-lg">
-                    <i class="fa-brands fa-cc-visa hover:text-white transition-colors cursor-pointer"></i>
-                    <i class="fa-brands fa-cc-mastercard hover:text-white transition-colors cursor-pointer"></i>
-                    <i class="fa-brands fa-cc-amex hover:text-white transition-colors cursor-pointer"></i>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Firebase Script (UPDATED) -->
+    <!-- Firebase Script -->
     <script type="module">
-        // Import from CDN instead of npm modules for plain HTML files
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-        import { getFirestore, collection, onSnapshot, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, doc, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Your Exact Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCsweqwn7454QwPHZWyIJYcd-uDO7SAdHM",
             authDomain: "e-commerce-websites-2a3c1.firebaseapp.com",
             projectId: "e-commerce-websites-2a3c1",
             storageBucket: "e-commerce-websites-2a3c1.firebasestorage.app",
             messagingSenderId: "866662908670",
-            appId: "1:866662908670:web:5f082ca5f6ada6ea02dbaf",
-            measurementId: "G-2EBSHL5T3C"
+            appId: "1:866662908670:web:5f082ca5f6ada6ea02dbaf"
         };
 
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app); // Analytics initialized as requested
         const db = getFirestore(app);
         
         let allProducts = [];
         let currentCategoryFilter = 'All'; 
         let currentSearchTerm = '';
-        let cart = JSON.parse(localStorage.getItem('blissbela_cart_eng')) || [];
+        let cart = JSON.parse(localStorage.getItem('blissbela_cart_usd')) || [];
         let currentDetailId = null;
         let currentDetailQty = 1;
 
-        const formatMoney = (amount) => Number(amount).toLocaleString('en-US', {style: 'currency', currency: 'USD'});
-
-        // Backend Dynamic Contact Info Update
-        onSnapshot(doc(db, "settings", "contact"), (docSnap) => {
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                if(data.phone) document.getElementById('contact-phone').innerText = data.phone;
-                if(data.email) document.getElementById('contact-email').innerText = data.email;
-                if(data.address) document.getElementById('contact-address').innerText = data.address;
-            }
-        });
+        // UPDATED: Currency Formatter for USD
+        const formatMoney = (amount) => '$' + Number(amount).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
         window.showToast = (message) => {
             const toast = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = message;
             toast.classList.remove('hidden');
-            toast.style.animation = 'none';
-            toast.offsetHeight; 
-            toast.style.animation = 'toastIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
-            setTimeout(() => {
-                toast.style.animation = 'toastIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse forwards';
-                setTimeout(() => toast.classList.add('hidden'), 300);
-            }, 3000);
-        };
-
-        const allViews = ['home-view', 'collection-view', 'product-view', 'checkout-view'];
-        window.showView = (targetViewId) => {
-            allViews.forEach(viewId => {
-                const el = document.getElementById(viewId);
-                if(el){
-                    if (viewId === targetViewId) {
-                        el.classList.remove('hidden');
-                        setTimeout(() => el.classList.remove('opacity-0', 'translate-y-8'), 10);
-                    } else {
-                        el.classList.add('hidden', 'opacity-0', 'translate-y-8');
-                    }
-                }
-            });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => toast.classList.add('hidden'), 3000);
         };
 
         window.toggleMobileMenu = () => {
@@ -455,254 +632,200 @@
             }
         };
 
-        // UI Helpers
-        const hideLoaders = () => {
-            document.querySelectorAll('.loader-container').forEach(l => l.classList.add('hidden'));
+        window.showView = (targetViewId) => {
+            ['home-view', 'collection-view', 'product-view', 'checkout-view', 'about-view', 'contact-view'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(targetViewId).classList.remove('hidden');
+            window.scrollTo(0,0);
         };
 
-        // Fallback Sample Data in case Firestore is empty or throws Permission error
-        const defaultCategories = [
-            { id: 'skincare', title: 'Skincare', category: 'Premium', description: 'Nourishing essentials', imageUrl: 'https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?q=80&w=400&auto=format&fit=crop' },
-            { id: 'haircare', title: 'Haircare', category: 'Essentials', description: 'For perfect locks', imageUrl: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?q=80&w=400&auto=format&fit=crop' },
-            { id: 'makeup', title: 'Makeup', category: 'Cosmetics', description: 'Everyday glamour', imageUrl: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=400&auto=format&fit=crop' },
-            { id: 'fragrance', title: 'Fragrance', category: 'Scents', description: 'Signature notes', imageUrl: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=400&auto=format&fit=crop' }
-        ];
-
-        const defaultProducts = [
-            { id: 'p1', title: 'Hydrating Face Serum', price: 45.00, imageUrl: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400', category: 'Skincare', description: 'Deep hydration for a glowing look.' },
-            { id: 'p2', title: 'Matte Liquid Lipstick', price: 18.50, imageUrl: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400', category: 'Makeup', isOnSale: true, salePrice: 14.00, description: 'Long lasting color.' },
-            { id: 'p3', title: 'Organic Shampoo', price: 22.00, imageUrl: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=400', category: 'Haircare', description: 'Sulfate-free hair repair.' },
-            { id: 'p4', title: 'Rose Eau de Parfum', price: 85.00, imageUrl: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400', category: 'Fragrance', description: 'Elegant and floral.' }
-        ];
-
-        const renderHomeCategories = (catList) => {
-            const sec1 = document.getElementById('dynamic-home-categories');
-            if(!sec1) return;
-            const listToRender = catList.length > 0 ? catList : defaultCategories;
-            
-            sec1.innerHTML = listToRender.slice(0, 4).map(cat => `
-                <div class="cursor-pointer group flex flex-col bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden min-w-[200px] md:min-w-0 snap-start flex-shrink-0" onclick="window.showCategory('${cat.title}')">
-                    <div class="w-full aspect-[3/4] overflow-hidden mb-3 bg-gray-50 border-b border-gray-100">
-                        <img src="${cat.imageUrl}" alt="${cat.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                    </div>
-                    <div class="pb-4 px-3 text-center">
-                        <h3 class="text-sm font-bold text-gray-900 line-clamp-1">${cat.title}</h3>
-                        <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest">${cat.description || 'Explore Collection'}</p>
-                    </div>
-                </div>
-            `).join('');
-            sec1.classList.remove('hidden');
-        };
-
-        // Fetch Categories
-        onSnapshot(collection(db, "categories"), 
+        // Fetching Products from Firebase
+        onSnapshot(collection(db, "products"), 
             (snapshot) => {
-                const fetchedCats = [];
-                snapshot.forEach(doc => fetchedCats.push({ id: doc.id, ...doc.data() }));
-                renderHomeCategories(fetchedCats);
+                document.querySelectorAll('.loader-container').forEach(l => l.classList.add('hidden'));
+                allProducts = [];
+                snapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() }));
+                
+                // Fallback dummy data mapped to USD and Beauty categories
+                if(allProducts.length === 0) {
+                    allProducts = [
+                        { id: '1', title: 'Vitamin C Brightening Serum', price: 45.00, category: 'Skincare', isOnSale: false, imageUrl: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=300' },
+                        { id: '2', title: 'Luxury Matte Lipstick Set', price: 35.00, salePrice: 28.50, category: 'Makeup', isOnSale: true, imageUrl: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=300' },
+                        { id: '3', title: 'Organic Argan Hair Oil', price: 24.99, category: 'Haircare', isOnSale: false, imageUrl: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=300' },
+                        { id: '4', title: 'Midnight Rose Perfume', price: 85.00, category: 'Fragrance', isOnSale: false, imageUrl: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?w=300' },
+                        { id: '5', title: 'Daily Moisture Face Cream', price: 32.00, salePrice: 25.00, category: 'Skincare', isOnSale: true, imageUrl: 'https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=300' }
+                    ];
+                }
+                
+                renderHomeSections();
+                renderCollection();
             },
-            (error) => {
-                console.warn("Categories Error (Check Rules or DB Empty):", error);
-                renderHomeCategories(defaultCategories); // Load fallback if error
-            }
+            (error) => { console.error("Firebase Read Error:", error); }
         );
 
         window.handleSearch = (e) => {
             if(e && e.type === 'keypress' && e.key !== 'Enter') return;
             const term = (document.getElementById('desktop-search').value || document.getElementById('mobile-search').value).toLowerCase();
-            currentSearchTerm = term;
-            currentCategoryFilter = 'All'; 
-            document.getElementById('collection-main-title').innerText = currentSearchTerm ? "Search Results: " + term : "All Products";
-            window.showView('collection-view');
-            renderCollection();
+            currentSearchTerm = term; currentCategoryFilter = 'All'; 
+            document.getElementById('breadcrumb-category').innerText = `Search: ${term}`;
+            window.showView('collection-view'); renderCollection();
         };
 
         window.showCategory = (cat) => {
-            currentCategoryFilter = cat;
-            currentSearchTerm = ''; 
-            document.getElementById('collection-main-title').innerText = cat === 'All' ? "All Products" : "Bliss Bela " + cat;
-            window.showView('collection-view');
-            renderCollection(); 
+            currentCategoryFilter = cat; currentSearchTerm = ''; 
+            document.getElementById('breadcrumb-category').innerText = cat === 'All' ? 'Shop All' : cat;
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const activeLinks = Array.from(document.querySelectorAll('.nav-link')).filter(l => l.innerText.includes(cat) || (cat==='All' && l.innerText.includes('Shop All')));
+            if(activeLinks.length) activeLinks[0].classList.add('active');
+
+            window.showView('collection-view'); renderCollection(); 
         };
 
-        window.updateCartUI = () => {
-            localStorage.setItem('blissbela_cart_eng', JSON.stringify(cart));
-            const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-            document.querySelectorAll('.cart-count').forEach(el => el.innerText = totalItems);
+        const createCompactCard = (p) => {
+            const price = p.isOnSale && p.salePrice ? p.salePrice : p.price;
+            const discount = p.isOnSale && p.salePrice ? Math.round(((p.price - p.salePrice) / p.price) * 100) : 0;
+            
+            return `
+                <div class="product-card cursor-pointer p-2 sm:p-3 relative flex flex-col h-full group" onclick="window.openProduct('${p.id}')">
+                    ${p.isOnSale ? `<div class="absolute top-2 left-2 bg-brand-primary text-white text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-sm z-10">SAVE ${discount}%</div>` : ''}
+                    <button class="absolute top-2 right-2 text-gray-300 hover:text-brand-primary z-10 transition-colors"><i class="fa-solid fa-heart sm:text-lg"></i></button>
+                    
+                    <div class="w-full h-24 sm:h-36 md:h-48 flex items-center justify-center bg-[#fcfcfc] mb-2 sm:mb-3 p-2 rounded-sm">
+                        <img src="${p.imageUrl}" alt="${p.title}" class="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col justify-end">
+                        <h3 class="text-[10px] sm:text-xs font-bold text-gray-800 line-clamp-2 leading-tight mb-1 sm:mb-2">${p.title}</h3>
+                        <div class="flex items-end justify-between mt-auto">
+                            <p class="text-[11px] sm:text-sm font-black text-gray-900">${formatMoney(price)}</p>
+                            ${p.isOnSale ? `<span class="text-[9px] text-gray-400 line-through">${formatMoney(p.price)}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
 
-            const cartContainer = document.getElementById('cart-items-container');
-            let totalAmount = 0;
+        const renderHomeSections = () => {
+            const sec = document.getElementById('home-sec-2'); if(!sec) return;
+            sec.innerHTML = allProducts.slice(0, 10).map(p => createCompactCard(p)).join('');
+        };
+
+        const renderCollection = () => {
+            const grid = document.getElementById('product-grid');
+            let filtered = allProducts;
+            
+            if(currentCategoryFilter !== 'All') filtered = filtered.filter(p => p.category === currentCategoryFilter);
+            if(currentSearchTerm) filtered = filtered.filter(p => p.title.toLowerCase().includes(currentSearchTerm));
+
+            if(filtered.length === 0) {
+                 grid.classList.add('hidden'); document.getElementById('empty-state').classList.remove('hidden'); 
+            } else {
+                grid.classList.remove('hidden'); document.getElementById('empty-state').classList.add('hidden');
+                grid.innerHTML = filtered.map(p => createCompactCard(p)).join('');
+            }
+        };
+
+        window.openProduct = (id) => {
+            const p = allProducts.find(x => x.id === id); if(!p) return;
+            currentDetailId = p.id; currentDetailQty = 1;
+            document.getElementById('detail-qty-input').value = 1;
+            document.getElementById('detail-image').src = p.imageUrl;
+            document.getElementById('detail-title').innerText = p.title;
+            document.getElementById('detail-category-tag').innerText = p.category || 'Beauty';
+            document.getElementById('detail-description').innerText = p.description || 'Experience premium quality with this luxurious addition to your beauty routine. Formulated with carefully selected ingredients to deliver outstanding results.';
+            
+            if(p.isOnSale && p.salePrice) {
+                document.getElementById('detail-price').innerText = formatMoney(p.salePrice);
+                document.getElementById('detail-old-price-container').classList.remove('hidden');
+                document.getElementById('detail-old-price').innerText = formatMoney(p.price);
+                const discount = Math.round(((p.price - p.salePrice) / p.price) * 100);
+                document.getElementById('detail-discount-percent').innerText = `Save ${discount}%`;
+                document.getElementById('detail-badge-container').innerHTML = `<div class="bg-brand-primary text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider">On Sale</div>`;
+            } else {
+                document.getElementById('detail-price').innerText = formatMoney(p.price);
+                document.getElementById('detail-old-price-container').classList.add('hidden');
+                document.getElementById('detail-badge-container').innerHTML = '';
+            }
+            window.showView('product-view');
+        };
+
+        window.changeDetailQtyDirect = (val) => { currentDetailQty = Math.max(1, parseInt(val) || 1); };
+
+        // --- CART LOGIC ---
+        window.updateCartUI = () => {
+            localStorage.setItem('blissbela_cart_usd', JSON.stringify(cart));
+            const totalItems = cart.reduce((a,b)=>a+b.quantity,0);
+            document.querySelectorAll('.cart-count').forEach(el => el.innerText = totalItems + (el.classList.contains('hidden')?'':' CART'));
+            if(document.querySelector('.cart-count.absolute')) document.querySelector('.cart-count.absolute').innerText = totalItems; // mobile
+            
+            const container = document.getElementById('cart-items-container');
+            let total = 0;
 
             if (cart.length === 0) {
-                cartContainer.innerHTML = `<div class="text-center py-12"><p class="font-medium text-gray-500 text-sm">Your cart is empty.</p></div>`;
+                container.innerHTML = `<div class="text-center py-12"><i class="fa-solid fa-bag-shopping text-4xl text-gray-200 mb-3"></i><p class="text-gray-500 text-sm font-medium">Your cart is currently empty.</p><button onclick="window.closeCart(); window.showCategory('All');" class="mt-4 text-brand-primary text-xs font-bold uppercase hover:underline">Continue Shopping</button></div>`;
             } else {
-                cartContainer.innerHTML = cart.map((item, index) => {
+                container.innerHTML = cart.map(item => {
                     const price = item.isOnSale && item.salePrice ? item.salePrice : item.price;
-                    totalAmount += price * item.quantity;
+                    total += price * item.quantity;
                     return `
-                        <div class="flex py-5 border-b border-gray-100">
-                            <div class="h-16 w-16 flex-shrink-0 bg-gray-50 rounded-xl p-1 border border-gray-200">
-                                <img src="${item.imageUrl}" class="h-full w-full object-contain mix-blend-multiply">
+                        <div class="flex py-4 border-b border-gray-100 relative group">
+                            <button onclick="window.removeFromCart('${item.id}')" class="absolute top-4 right-0 text-gray-300 hover:text-red-500 transition-colors"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                            <div class="h-16 w-16 bg-[#fcfcfc] border border-gray-100 p-1 rounded-sm flex-shrink-0 flex items-center justify-center">
+                                <img src="${item.imageUrl}" class="max-h-full max-w-full object-contain mix-blend-multiply">
                             </div>
-                            <div class="ml-4 flex flex-1 flex-col justify-center">
-                                <div class="flex justify-between items-start">
-                                    <h3 class="text-sm font-semibold text-gray-900 pr-2">${item.title}</h3>
-                                    <button onclick="window.removeFromCart('${item.id}')" class="text-red-500"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                            <div class="ml-4 pr-6 flex flex-col justify-center w-full">
+                                <h3 class="text-xs font-bold text-gray-900 line-clamp-1 mb-1">${item.title}</h3>
+                                <div class="flex justify-between items-center w-full">
+                                    <p class="text-xs font-black text-gray-800">${formatMoney(price)}</p>
+                                    <span class="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 rounded-sm">Qty: ${item.quantity}</span>
                                 </div>
-                                <p class="text-sm font-bold mt-1">${formatMoney(price)} x ${item.quantity}</p>
                             </div>
                         </div>
                     `;
                 }).join('');
             }
-            document.getElementById('cart-total-price').innerText = formatMoney(totalAmount);
+            const tFmt = formatMoney(total);
+            document.getElementById('cart-total-price').innerText = tFmt;
+            document.getElementById('header-cart-price').innerText = tFmt;
+            document.getElementById('checkout-total').innerText = tFmt;
         };
 
         window.addDetailToCart = (isBuyNow) => {
             if(!currentDetailId) return;
             const product = allProducts.find(p => p.id === currentDetailId);
-            if(!product) return;
             const existing = cart.find(item => item.id === currentDetailId);
             if(existing) existing.quantity += currentDetailQty;
             else cart.push({ ...product, quantity: currentDetailQty });
             window.updateCartUI();
-            if(isBuyNow) window.goToCheckout();
-            else { window.showToast("Added to cart"); window.openCart(); }
+            if(isBuyNow) { window.goToCheckout(); } else { window.showToast("Item added to cart"); window.openCart(); }
         };
 
-        window.removeFromCart = (id) => {
-            cart = cart.filter(i => i.id !== id);
-            window.updateCartUI();
-        };
+        window.removeFromCart = (id) => { cart = cart.filter(i => i.id !== id); window.updateCartUI(); };
+        window.openCart = () => { document.getElementById('cart-drawer').classList.remove('hidden'); setTimeout(()=>document.getElementById('cart-panel').classList.remove('translate-x-full'),10); };
+        window.closeCart = () => { document.getElementById('cart-panel').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('cart-drawer').classList.add('hidden'),300); };
+        window.goToCheckout = () => { window.closeCart(); window.showView('checkout-view'); };
 
-        window.openCart = () => {
-            document.getElementById('cart-drawer').classList.remove('hidden');
-            setTimeout(() => document.getElementById('cart-panel').classList.remove('translate-x-full'), 10);
-        };
-
-        window.closeCart = () => {
-            document.getElementById('cart-panel').classList.add('translate-x-full');
-            setTimeout(() => document.getElementById('cart-drawer').classList.add('hidden'), 300);
-        };
-
-        window.goToCheckout = () => {
-            window.closeCart();
-            window.showView('checkout-view');
-        };
-
-        const createCategoryProductCard = (p) => {
-            const price = p.isOnSale && p.salePrice ? p.salePrice : p.price;
-            const card = document.createElement('div');
-            card.className = `group cursor-pointer flex flex-col mb-4`;
-            card.onclick = () => window.openProduct(p.id);
-            
-            card.innerHTML = `
-                <div class="relative w-full aspect-square bg-[#f9f9f9] rounded-xl overflow-hidden mb-3 border border-gray-100">
-                    <img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                </div>
-                <h3 class="text-sm font-medium text-gray-900 line-clamp-1">${p.title}</h3>
-                <p class="text-sm font-bold text-gray-900 mt-1">USD ${formatMoney(price).replace('$', '')}</p>
-                ${p.isOnSale ? `<p class="text-[10px] text-green-600 font-medium mt-1">On Sale</p>` : ''}
-            `;
-            return card;
-        };
-
-        const renderCollection = () => {
-            const grid = document.getElementById('product-grid');
-            if(!grid) return;
-            grid.innerHTML = '';
-            
-            let filteredProducts = allProducts;
-            if(currentCategoryFilter !== 'All') {
-                filteredProducts = filteredProducts.filter(p => p.category && p.category.toLowerCase() === currentCategoryFilter.toLowerCase());
-            }
-            if(currentSearchTerm) {
-                filteredProducts = filteredProducts.filter(p => p.title.toLowerCase().includes(currentSearchTerm));
-            }
-
-            if(filteredProducts.length === 0) {
-                 grid.classList.add('hidden'); 
-                 document.getElementById('empty-state').classList.remove('hidden'); 
-                 return;
-            }
-            grid.classList.remove('hidden'); 
-            document.getElementById('empty-state').classList.add('hidden');
-            
-            filteredProducts.forEach(p => grid.appendChild(createCategoryProductCard(p)));
-        };
-
-        const renderHomeSections = (productsList) => {
-            if(productsList.length === 0) return;
-            const sec2 = document.getElementById('home-sec-2');
-            if(sec2) {
-                sec2.innerHTML = productsList.slice(0, 6).map(p => `
-                    <div class="cursor-pointer group flex flex-col min-w-[160px] md:min-w-[220px] snap-start flex-shrink-0" onclick="window.openProduct('${p.id}')">
-                        <div class="w-full aspect-square rounded-2xl overflow-hidden mb-3 bg-[#f9f9f9] border border-gray-100">
-                            <img src="${p.imageUrl}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        </div>
-                        <h3 class="text-sm font-medium text-gray-900 text-center line-clamp-1 px-2">${p.title}</h3>
-                    </div>
-                `).join('');
-            }
-        };
-
-        // Fetch Products with Fallback and Error Handling
-        onSnapshot(collection(db, "products"), 
-            (snapshot) => {
-                hideLoaders();
-                allProducts = [];
-                snapshot.forEach((doc) => allProducts.push({ id: doc.id, ...doc.data() }));
-                
-                // If DB is completely empty, use dummy data so site isn't blank
-                if(allProducts.length === 0) allProducts = defaultProducts;
-
-                allProducts.sort((a, b) => (a.isOnSale && !b.isOnSale ? -1 : (!a.isOnSale && b.isOnSale ? 1 : 0)));
-                renderHomeSections(allProducts);
-                renderCollection();
-            },
-            (error) => {
-                console.warn("Products Error (Check Rules or DB Empty):", error);
-                hideLoaders();
-                allProducts = defaultProducts; // Fallback data
-                renderHomeSections(allProducts);
-                renderCollection();
-                window.showToast("Note: Showing sample data. Update Firebase Rules.");
-            }
-        );
-
-        window.changeDetailQtyDirect = (val) => {
-            currentDetailQty = Math.max(1, parseInt(val) || 1);
-            document.getElementById('detail-qty-input').value = currentDetailQty;
-        };
-
-        window.openProduct = (id) => {
-            const p = allProducts.find(x => x.id === id);
-            if(!p) return;
-            currentDetailId = p.id;
-            currentDetailQty = 1;
-            
-            document.getElementById('detail-qty-input').value = currentDetailQty;
-            document.getElementById('detail-image').src = p.imageUrl;
-            document.getElementById('thumb-1').src = p.imageUrl;
-            document.getElementById('detail-title').innerText = p.title;
-            document.getElementById('detail-description').innerText = p.description || 'Premium quality product.';
-            
-            const priceFmt = formatMoney(p.price);
-            const oldPriceContainer = document.getElementById('detail-old-price-container');
-            
-            if(p.isOnSale && p.salePrice) {
-                document.getElementById('detail-price').innerText = "US " + formatMoney(p.salePrice);
-                document.getElementById('detail-old-price').innerText = "US " + priceFmt;
-                const discount = Math.round(((p.price - p.salePrice) / p.price) * 100);
-                document.getElementById('detail-discount-percent').innerText = `(${discount}% off)`;
-                oldPriceContainer.classList.remove('hidden');
-                document.getElementById('detail-badge-container').innerHTML = `<div class="bg-red-600 text-white text-[10px] font-bold uppercase px-3 py-1 rounded">Hot Deal</div>`;
-            } else {
-                document.getElementById('detail-price').innerText = "US " + priceFmt;
-                oldPriceContainer.classList.add('hidden');
-                document.getElementById('detail-badge-container').innerHTML = '';
-            }
-            window.showView('product-view');
+        // Checkout
+        window.processCheckout = async (e) => {
+            e.preventDefault();
+            if(cart.length === 0) return window.showToast("Your cart is empty!");
+            const btn = document.getElementById('place-order-btn'); btn.innerHTML = 'Processing securely...'; btn.disabled = true;
+            const totalAmount = cart.reduce((acc, item) => acc + ((item.isOnSale && item.salePrice ? item.salePrice : item.price) * item.quantity), 0);
+            const orderData = {
+                customerName: document.getElementById('cName').value, email: document.getElementById('cEmail').value,
+                phone: document.getElementById('cPhone').value, address: document.getElementById('cAddress').value,
+                items: cart.map(i => ({ id: i.id, title: i.title, price: i.price, salePrice: i.salePrice || null, quantity: i.quantity })),
+                total: totalAmount, status: 'Pending', createdAt: new Date().toISOString()
+            };
+            try {
+                await addDoc(collection(db, "orders"), orderData);
+                window.showToast("Order Placed Successfully!"); cart = []; window.updateCartUI();
+                document.getElementById('checkout-form').reset(); window.showView('home-view');
+            } catch (err) { window.showToast("Error placing order. Please try again."); } 
+            finally { btn.innerHTML = 'Complete Order'; btn.disabled = false; }
         };
 
         window.updateCartUI();
